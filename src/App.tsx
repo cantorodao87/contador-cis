@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import Gestion from './pages/Gestion';
 import Visualizacion from './pages/Visualizacion';
+import Reset from './pages/Reset';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Gestion />} />
         <Route path="/ver" element={<Visualizacion />} />
+        <Route path="/reset" element={<Reset />} />
       </Routes>
     </Router>
   );

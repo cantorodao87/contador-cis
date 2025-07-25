@@ -54,7 +54,7 @@ const Gestion: React.FC = () => {
             id,
             nombre: t.nombre
           }))}
-          reservas={t.reservas || []}
+          reservas={Object.values(t.reservas || {})}
           favores={t.favores ? Object.values(t.favores) : []}
           onNuevaReserva={(fecha) => agregarReserva(id, fecha)}
           onNuevoFavor={(favor) => agregarFavor(id, favor)}
