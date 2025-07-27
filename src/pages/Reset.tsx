@@ -5,6 +5,9 @@ const Reset = () => {
   const [status, setStatus] = useState<string>("");
 
   const resetearDatos = async () => {
+    const confirmar = window.confirm("⚠️ Esto eliminará TODAS las reservas y peticiones. ¿Estás seguro?");
+    if (!confirmar) return;
+
     try {
       setStatus("⏳ Reseteando...");
       await Promise.all([

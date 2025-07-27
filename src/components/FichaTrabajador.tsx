@@ -35,80 +35,93 @@ const FichaTrabajador: React.FC<Props> = ({
   const [mostrarPeticion, setMostrarPeticion] = useState(false);
 
   const trabajadoresSinYo = listaTrabajadores.filter(t => t.nombre !== nombre);
-
   const peticionesHechas = peticiones.filter(p => p.de === nombre);
   const peticionesRecibidas = peticiones.filter(p => p.para === nombre);
   const saldo = peticionesRecibidas.length - peticionesHechas.length;
 
   return (
-    <div style={{
-      border: "1px solid #ccc",
-      borderRadius: "8px",
-      padding: "1rem",
-      width: "300px"
-    }}>
-      <h3>{nombre}</h3>
+    <div className="bg-white rounded-lg shadow-md p-4 w-[300px]">
+      <h3 className="text-xl font-semibold mb-2">{nombre}</h3>
 
-      <p>🗓️ Reservas: {reservas.length}</p>
-      <p>🤝 Peticiones (saldo): {saldo}</p>
+      <div className="text-sm text-gray-700 mb-3">
+        <p>🗓️ <strong>Reservas:</strong> {reservas.length}</p>
+        <p>🤝 <strong>Peticiones (saldo):</strong> {saldo}</p>
+      </div>
 
-      <button onClick={() => setMostrarReserva(prev => !prev)} style={{ marginBottom: "0.5rem" }}>
-        {mostrarReserva ? "Ocultar Reserva" : "Añadir Reserva 📅"}
+      {/* Reserva */}
+      <button
+        className="bg-blue-100 hover:bg-blue-200 text-sm px-3 py-1 rounded mb-2"
+        onClick={() => setMostrarReserva(prev => !prev)}
+      >
+        {mostrarReserva ? "− Ocultar reserva" : "+ Añadir reserva"}
       </button>
 
       {mostrarReserva && (
-        <div style={{ marginBottom: "1rem" }}>
+        <div className="mb-3 flex flex-col gap-2 text-sm">
           <input
             type="date"
+            className="border rounded px-2 py-1"
             value={fechaReserva}
-            onChange={e => setFechaReserva(e.target.value)}
+            onChange={(e) => setFechaReserva(e.target.value)}
           />
           <button
+            className="bg-green-500 text-white px-3 py-1 rounded"
             onClick={() => {
               if (fechaReserva) {
-                onNuevaReserva(fechaReserva);
-                setFechaReserva("");
+                const confirmar = window.confirm(`¿Confirmas añadir una reserva el ${fechaReserva} para ${nombre}?`);
+                if (confirmar) {
+                  onNuevaReserva(fechaReserva);
+                  setFechaReserva("");
+                }
               }
             }}
-            style={{ marginLeft: "0.5rem" }}
           >
-            Guardar
+            Guardar reserva
           </button>
         </div>
       )}
 
-      <button onClick={() => setMostrarPeticion(prev => !prev)}>
-        {mostrarPeticion ? "Ocultar Petición" : "Pedir Ayuda 🤝"}
+      {/* Petición */}
+      <button
+        className="bg-yellow-100 hover:bg-yellow-200 text-sm px-3 py-1 rounded mb-2"
+        onClick={() => setMostrarPeticion(prev => !prev)}
+      >
+        {mostrarPeticion ? "− Ocultar petición" : "+ Pedir ayuda"}
       </button>
 
       {mostrarPeticion && (
-        <div style={{ marginTop: "0.5rem" }}>
+        <div className="flex flex-col gap-2 text-sm">
           <select
+            className="border rounded px-2 py-1"
             value={ayudanteId}
-            onChange={e => setAyudanteId(e.target.value)}
+            onChange={(e) => setAyudanteId(e.target.value)}
           >
-            <option value="">-- Selecciona compañero --</option>
+            <option value="">Selecciona compañero</option>
             {trabajadoresSinYo.map(t => (
               <option key={t.id} value={t.id}>{t.nombre}</option>
             ))}
           </select>
           <input
             type="date"
+            className="border rounded px-2 py-1"
             value={fechaPeticion}
-            onChange={e => setFechaPeticion(e.target.value)}
-            style={{ marginLeft: "0.5rem" }}
+            onChange={(e) => setFechaPeticion(e.target.value)}
           />
           <button
+            className="bg-orange-500 text-white px-3 py-1 rounded"
             onClick={() => {
               if (fechaPeticion && ayudanteId) {
-                onNuevaPeticion(ayudanteId, fechaPeticion);
-                setFechaPeticion("");
-                setAyudanteId("");
+                const compañeroNombre = listaTrabajadores.find(t => t.id === ayudanteId)?.nombre || ayudanteId;
+                const confirmar = window.confirm(`¿Confirmas que ${nombre} solicita ayuda a ${compañeroNombre} el ${fechaPeticion}?`);
+                if (confirmar) {
+                  onNuevaPeticion(ayudanteId, fechaPeticion);
+                  setFechaPeticion("");
+                  setAyudanteId("");
+                }
               }
             }}
-            style={{ marginLeft: "0.5rem" }}
           >
-            Registrar
+            Registrar petición
           </button>
         </div>
       )}
@@ -116,4 +129,4 @@ const FichaTrabajador: React.FC<Props> = ({
   );
 };
 
-export default FichaTrabajador;
+export default FichaTrabajador
