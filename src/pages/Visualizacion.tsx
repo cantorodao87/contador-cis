@@ -1,113 +1,100 @@
 import React, { useEffect, useState } from "react";
 import { db, ref, onValue, remove } from "../firebase/config";
 
-type Favor = {
-  trabajador: string;
-  fecha: string;
-  tipo: "+1" | "-1";
-};
-
 type Trabajador = {
   nombre: string;
-  reservas?: { [id: string]: string };
-  favores?: { [id: string]: Favor };
+};
+
+type Reserva = {
+  fecha: string;
+  trabajador: string;
+};
+
+type Peticion = {
+  fecha: string;
+  de: string;
+  para: string;
 };
 
 const Visualizacion: React.FC = () => {
   const [trabajadores, setTrabajadores] = useState<{ [id: string]: Trabajador }>({});
-  const [desplegarReservas, setDesplegarReservas] = useState<string | null>(null);
-  const [desplegarFavores, setDesplegarFavores] = useState<string | null>(null);
+  const [reservas, setReservas] = useState<{ [id: string]: Reserva }>({});
+  const [peticiones, setPeticiones] = useState<{ [id: string]: Peticion }>({});
+  const [expandir, setExpandir] = useState<string | null>(null);
 
   useEffect(() => {
-    const trabajadoresRef = ref(db, "trabajadores");
-    onValue(trabajadoresRef, (snapshot) => {
-      const data = snapshot.val() || {};
-      setTrabajadores(data);
-    });
+    onValue(ref(db, "trabajadores"), snap => setTrabajadores(snap.val() || {}));
+    onValue(ref(db, "reservas"), snap => setReservas(snap.val() || {}));
+    onValue(ref(db, "peticiones"), snap => setPeticiones(snap.val() || {}));
   }, []);
 
-  const borrarFavor = (idTrabajador: string, idFavor: string) => {
-    remove(ref(db, `trabajadores/${idTrabajador}/favores/${idFavor}`));
-  };
-
-  const borrarReserva = (idTrabajador: string, idReserva: string) => {
-    remove(ref(db, `trabajadores/${idTrabajador}/reservas/${idReserva}`));
-  };
+  const eliminarReserva = (id: string) => remove(ref(db, `reservas/${id}`));
+  const eliminarPeticion = (id: string) => remove(ref(db, `peticiones/${id}`));
 
   return (
     <div style={{ padding: "2rem" }}>
-      <h2>📊 Visualización de trabajadores</h2>
-      <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "2rem" }}>
+      <h2>📋 Visualización</h2>
+      <table style={{ width: "100%", borderCollapse: "collapse" }}>
         <thead>
           <tr>
             <th>Nombre</th>
-            <th>Favores</th>
+            <th>Peticiones (saldo)</th>
             <th>Reservas</th>
           </tr>
         </thead>
         <tbody>
           {Object.entries(trabajadores).map(([id, t]) => {
-            const favoresList = Object.entries(t.favores || {});
-            const reservasList = Object.entries(t.reservas || {});
-            const totalFavores = favoresList.reduce((acc, [, f]) => acc + (f.tipo === "+1" ? 1 : -1), 0);
+            const reservasDel = Object.entries(reservas).filter(([, r]) => r.trabajador === id);
+            const peticionesHechas = Object.entries(peticiones).filter(([, p]) => p.de === id);
+            const peticionesRecibidas = Object.entries(peticiones).filter(([, p]) => p.para === id);
+            const saldo = peticionesRecibidas.length - peticionesHechas.length;
 
             return (
               <React.Fragment key={id}>
                 <tr>
                   <td>{t.nombre}</td>
                   <td>
-                    {totalFavores}
-                    <button onClick={() =>
-                      setDesplegarFavores(desplegarFavores === id ? null : id)
-                    }>
-                      {desplegarFavores === id ? "−" : "+"}
+                    {saldo}
+                    <button onClick={() => setExpandir(expandir === `p-${id}` ? null : `p-${id}`)}>
+                      {expandir === `p-${id}` ? "−" : "+"}
                     </button>
                   </td>
                   <td>
-                    {reservasList.length}
-                    <button onClick={() =>
-                      setDesplegarReservas(desplegarReservas === id ? null : id)
-                    }>
-                      {desplegarReservas === id ? "−" : "+"}
+                    {reservasDel.length}
+                    <button onClick={() => setExpandir(expandir === `r-${id}` ? null : `r-${id}`)}>
+                      {expandir === `r-${id}` ? "−" : "+"}
                     </button>
                   </td>
                 </tr>
 
-                {desplegarFavores === id && (
+                {expandir === `p-${id}` && (
                   <tr>
                     <td colSpan={3}>
-                      <strong>🤝 Favores:</strong>
+                      <strong>🤝 Peticiones:</strong>
                       <ul>
-                        {favoresList.map(([fid, f]) => (
-                          <li key={fid}>
-                            {f.fecha} → {trabajadores[f.trabajador]?.nombre || f.trabajador} ({f.tipo})
-                            <button
-                              onClick={() => borrarFavor(id, fid)}
-                              style={{ marginLeft: "0.5rem", color: "red" }}
-                            >
-                              ❌
-                            </button>
-                          </li>
+                        {[...peticionesHechas, ...peticionesRecibidas].map(([pid, p]) => (
+                          (p.de === id || p.para === id) && (
+                            <li key={pid}>
+                              {p.fecha} → {p.de === id ? "Solicitó a " : "Ayudó a "}
+                              {trabajadores[p.de === id ? p.para : p.de]?.nombre || "?"}
+                              <button onClick={() => eliminarPeticion(pid)} style={{ marginLeft: "0.5rem" }}>❌</button>
+                            </li>
+                          )
                         ))}
                       </ul>
                     </td>
                   </tr>
                 )}
 
-                {desplegarReservas === id && (
+                {expandir === `r-${id}` && (
                   <tr>
                     <td colSpan={3}>
                       <strong>🗓️ Reservas:</strong>
                       <ul>
-                        {reservasList.map(([rid, fecha]) => (
+                        {reservasDel.map(([rid, r]) => (
                           <li key={rid}>
-                            {fecha}
-                            <button
-                              onClick={() => borrarReserva(id, rid)}
-                              style={{ marginLeft: "0.5rem", color: "red" }}
-                            >
-                              ❌
-                            </button>
+                            {r.fecha}
+                            <button onClick={() => eliminarReserva(rid)} style={{ marginLeft: "0.5rem" }}>❌</button>
                           </li>
                         ))}
                       </ul>

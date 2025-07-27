@@ -1,114 +1,115 @@
 import React, { useState } from "react";
 
-type Favor = {
-  trabajador: string;
+type Reserva = {
   fecha: string;
-  tipo: "+1" | "-1";
+  trabajador: string;
 };
 
-type FichaProps = {
+type Peticion = {
+  fecha: string;
+  de: string;
+  para: string;
+};
+
+type Props = {
   nombre: string;
-  reservas: string[];
-  favores: Favor[];
   listaTrabajadores: { id: string; nombre: string }[];
-  onNuevaReserva?: (fecha: string) => void;
-  onNuevoFavor?: (favor: Favor) => void;
+  reservas: Reserva[];
+  peticiones: Peticion[];
+  onNuevaReserva: (fecha: string) => void;
+  onNuevaPeticion: (ayudanteId: string, fecha: string) => void;
 };
 
-const FichaTrabajador: React.FC<FichaProps> = ({
+const FichaTrabajador: React.FC<Props> = ({
   nombre,
-  reservas,
-  favores,
   listaTrabajadores,
+  reservas,
+  peticiones,
   onNuevaReserva,
-  onNuevoFavor
+  onNuevaPeticion
 }) => {
-  const [mostrarReservasForm, setMostrarReservasForm] = useState(false);
-  const [mostrarFavoresForm, setMostrarFavoresForm] = useState(false);
-
   const [fechaReserva, setFechaReserva] = useState("");
-  const [favorFecha, setFavorFecha] = useState("");
-  const [favorTrabajador, setFavorTrabajador] = useState("");
+  const [fechaPeticion, setFechaPeticion] = useState("");
+  const [ayudanteId, setAyudanteId] = useState("");
+  const [mostrarReserva, setMostrarReserva] = useState(false);
+  const [mostrarPeticion, setMostrarPeticion] = useState(false);
 
-  const handleAgregarReserva = () => {
-    if (fechaReserva && onNuevaReserva) {
-      onNuevaReserva(fechaReserva);
-      setFechaReserva("");
-      setMostrarReservasForm(false);
-    }
-  };
+  const trabajadoresSinYo = listaTrabajadores.filter(t => t.nombre !== nombre);
 
-  const handleAgregarFavor = () => {
-    if (favorFecha && favorTrabajador && onNuevoFavor) {
-      const nuevoFavor: Favor = {
-        trabajador: favorTrabajador,
-        fecha: favorFecha,
-        tipo: "+1"
-      };
-      onNuevoFavor(nuevoFavor);
-      setFavorFecha("");
-      setFavorTrabajador("");
-      setMostrarFavoresForm(false);
-    }
-  };
-
-  const totalFavores = favores.reduce((acc, f) => acc + (f.tipo === "+1" ? 1 : -1), 0);
+  const peticionesHechas = peticiones.filter(p => p.de === nombre);
+  const peticionesRecibidas = peticiones.filter(p => p.para === nombre);
+  const saldo = peticionesRecibidas.length - peticionesHechas.length;
 
   return (
     <div style={{
-      border: "2px solid #ccc",
+      border: "1px solid #ccc",
       borderRadius: "8px",
       padding: "1rem",
-      width: "250px",
-      backgroundColor: "#000000ff"
+      width: "300px"
     }}>
-      <h3 style={{ marginBottom: "0.5rem" }}>{nombre}</h3>
+      <h3>{nombre}</h3>
 
-      <div style={{ marginBottom: "0.5rem" }}>
-        🗓️ <strong>Reservas:</strong> {reservas.length}
-        <button onClick={() => setMostrarReservasForm(!mostrarReservasForm)} style={{ marginLeft: "0.5rem" }}>
-          {mostrarReservasForm ? "−" : "+"}
-        </button>
-      </div>
+      <p>🗓️ Reservas: {reservas.length}</p>
+      <p>🤝 Peticiones (saldo): {saldo}</p>
 
-      {mostrarReservasForm && (
+      <button onClick={() => setMostrarReserva(prev => !prev)} style={{ marginBottom: "0.5rem" }}>
+        {mostrarReserva ? "Ocultar Reserva" : "Añadir Reserva 📅"}
+      </button>
+
+      {mostrarReserva && (
         <div style={{ marginBottom: "1rem" }}>
           <input
             type="date"
             value={fechaReserva}
-            onChange={(e) => setFechaReserva(e.target.value)}
-            style={{ marginRight: "0.5rem" }}
+            onChange={e => setFechaReserva(e.target.value)}
           />
-          <button onClick={handleAgregarReserva}>✔️</button>
+          <button
+            onClick={() => {
+              if (fechaReserva) {
+                onNuevaReserva(fechaReserva);
+                setFechaReserva("");
+              }
+            }}
+            style={{ marginLeft: "0.5rem" }}
+          >
+            Guardar
+          </button>
         </div>
       )}
 
-      <div style={{ marginBottom: "0.5rem" }}>
-        🤝 <strong>Favores:</strong> {totalFavores}
-        <button onClick={() => setMostrarFavoresForm(!mostrarFavoresForm)} style={{ marginLeft: "0.5rem" }}>
-          {mostrarFavoresForm ? "−" : "+"}
-        </button>
-      </div>
+      <button onClick={() => setMostrarPeticion(prev => !prev)}>
+        {mostrarPeticion ? "Ocultar Petición" : "Pedir Ayuda 🤝"}
+      </button>
 
-      {mostrarFavoresForm && (
-        <div>
-          <input
-            type="date"
-            value={favorFecha}
-            onChange={(e) => setFavorFecha(e.target.value)}
-            style={{ marginBottom: "0.5rem" }}
-          />
+      {mostrarPeticion && (
+        <div style={{ marginTop: "0.5rem" }}>
           <select
-            value={favorTrabajador}
-            onChange={(e) => setFavorTrabajador(e.target.value)}
-            style={{ width: "100%", marginBottom: "0.5rem" }}
+            value={ayudanteId}
+            onChange={e => setAyudanteId(e.target.value)}
           >
-            <option value="">Selecciona compañero</option>
-            {listaTrabajadores.map(t => (
+            <option value="">-- Selecciona compañero --</option>
+            {trabajadoresSinYo.map(t => (
               <option key={t.id} value={t.id}>{t.nombre}</option>
             ))}
           </select>
-          <button onClick={handleAgregarFavor}>✔️</button>
+          <input
+            type="date"
+            value={fechaPeticion}
+            onChange={e => setFechaPeticion(e.target.value)}
+            style={{ marginLeft: "0.5rem" }}
+          />
+          <button
+            onClick={() => {
+              if (fechaPeticion && ayudanteId) {
+                onNuevaPeticion(ayudanteId, fechaPeticion);
+                setFechaPeticion("");
+                setAyudanteId("");
+              }
+            }}
+            style={{ marginLeft: "0.5rem" }}
+          >
+            Registrar
+          </button>
         </div>
       )}
     </div>
