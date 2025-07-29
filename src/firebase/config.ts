@@ -3,7 +3,7 @@ import { initializeApp } from "firebase/app";
 import { getDatabase, ref, get, set, push, update, remove, onValue } from "firebase/database";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCLR1NyFMAkYmzxZ9K2v0nYZgL767sAAJc",
+  apiKey: import.meta.env.VITE_API_KEY,
   authDomain: "contadorcis.firebaseapp.com",
   databaseURL: "https://contadorcis-default-rtdb.firebaseio.com",
   projectId: "contadorcis",

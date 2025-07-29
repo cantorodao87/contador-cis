@@ -24,3 +24,4 @@ dist-ssr
 *.sw?
 doc/Doc.odt
 doc/.~lock.Doc.odt#
+.env
