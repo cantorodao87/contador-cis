@@ -25,3 +25,5 @@ dist-ssr
 doc/Doc.odt
 doc/.~lock.Doc.odt#
 .env
+doc/.~lock.Doc_Copilot.odt#
+doc/.~lock.Doc_Version.odt#
