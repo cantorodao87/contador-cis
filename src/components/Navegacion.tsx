@@ -18,7 +18,7 @@ export default function Navegacion({ esAdmin, menuLateral }: Props) {
 
   if (menuLateral) {
     return (
-      <aside className="w-64 bg-gray-100 flex flex-col p-4 space-y-4">
+      <aside className="w-32 bg-gray-100 flex flex-col p-4 space-y-4">
         <h1 className="text-xl font-bold mb-2">Menú</h1>
         {links}
       </aside>
