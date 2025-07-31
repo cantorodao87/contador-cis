@@ -1,42 +1,48 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { Routes, Route } from "react-router-dom";
+
 import Bolsa from './pages/Bolsa';
 import Reservas from './pages/Reservas';
 import Resumen from './pages/Resumen';
 import Admin from './pages/Admin';
 import Reset from './pages/Reset';
+import Navegacion from "./components/Navegacion";
 
-function App() {
-
+export default function App() {
   const [esAdmin, setEsAdmin] = useState(false);
 
+  const [menuLateral, setMenuLateral] = useState(() => {
+    const guardado = localStorage.getItem("menuLateral");
+    return guardado === "true"; // superior por defecto si no hay valor
+  });
+
+  useEffect(() => {
+    localStorage.setItem("menuLateral", menuLateral.toString());
+  }, [menuLateral]);
+
   return (
-    <Router>
-      <nav className="bg-white shadow-md px-6 py-4 flex items-center justify-between">
-        <h1 className="text-xl font-bold text-gray-800">Menú</h1>
-        <Link className="hover:text-blue-600 cursor-pointer" to="/">Bolsa</Link>
-        |        
-        <Link className="hover:text-blue-600 cursor-pointer" to="/reservas">Reservas</Link>
-        |
-        <Link className="hover:text-blue-600 cursor-pointer" to="/resumen">Resumen</Link>
-        |
-        {esAdmin && (
-          <>
-            <Link className="hover:text-blue-600 cursor-pointer" to="/reset">Reset</Link>
-            |
-          </>
-        )}
-        <Link className="hover:text-blue-600 cursor-pointer" to="/admin">Admin</Link>
-      </nav>
-      <Routes>
-        <Route path="/" element={<Bolsa />} />
-        <Route path="/reservas" element={<Reservas />} />
-        <Route path="/resumen" element={<Resumen esAdmin={esAdmin} />} />
-        <Route path="/admin" element={<Admin setEsAdmin={setEsAdmin} />} />
-        <Route path="/reset" element={<Reset />} />
-      </Routes>
-    </Router>
+    <div className={`h-screen ${menuLateral ? "flex flex-row" : "flex flex-col"}`}>
+      <Navegacion esAdmin={esAdmin} menuLateral={menuLateral} />
+
+      <main className="flex-1 overflow-y-auto">
+        <Routes>
+          <Route path="/" element={<Bolsa />} />
+          <Route path="/reservas" element={<Reservas />} />
+          <Route path="/resumen" element={<Resumen esAdmin={esAdmin} />} />
+          <Route
+            path="/admin"
+            element={
+              <Admin
+                esAdmin={esAdmin}
+                setEsAdmin={setEsAdmin}
+                menuLateral={menuLateral}
+                setMenuLateral={setMenuLateral}
+              />
+            }
+          />
+          <Route path="/reset" element={<Reset />} />
+        </Routes>
+      </main>
+    </div>
   );
 }
-
-export default App;

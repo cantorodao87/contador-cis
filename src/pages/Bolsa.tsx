@@ -63,11 +63,40 @@ const Bolsa: React.FC = () => {
     setPermuta(false);
   };
 
+ const [modoAceptacion, setModoAceptacion] = useState("sin-permuta");
+
   const aceptarPeticion = (pid: string) => {
     if (!seleccionPara) return alert("⚠️ Selecciona un trabajador para asignarlo.");
-    update(ref(db, `peticiones/${pid}`), { para: seleccionPara });
+    const confirmar = window.confirm("RECUERDA CONTACTAR CON EL COMPAÑERO ANTES DE ACEPTAR ESTA PETICIÓN PARA CONTRASTAR LA CONFORMIDAD");
+    if (!confirmar) return;
+
+    const actualizaciones: any = { para: seleccionPara };
+
+    update(ref(db, `peticiones/${pid}`), actualizaciones);
+
+    if (modoAceptacion === "con-permuta") {
+      if (!nuevoDe || !nuevaFecha || !nuevaClave) {
+        return alert("⚠️ Completa los datos de devolución para crear la permuta.");
+      }
+
+      const nuevaPeticion = {
+        de: nuevoDe,
+        para: peticiones[pid].de,
+        fecha: nuevaFecha,
+        clave: nuevaClave,
+        permuta: true
+      };
+
+      push(ref(db, "peticiones"), nuevaPeticion);
+    }
+
+    // Reset
     setSelectorActivo(null);
     setSeleccionPara("");
+    setModoAceptacion("sin-permuta");
+    setNuevoDe("");
+    setNuevaFecha("");
+    setNuevaClave("");
   };
 
   const peticionesOrdenadas = Object.entries(peticiones).sort((a, b) => {

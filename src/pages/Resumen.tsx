@@ -47,7 +47,7 @@ const Resumen: React.FC<Props> = ({ esAdmin }) => {
 
   return (
     <div style={{ padding: "2rem" }}>
-      <h2>📋 Visualización</h2>
+      <h2 className="text-2xl font-bold mb-6">📋 Visualización</h2>
       <table className="w-full border-collapse">
         <thead>
           <tr className="bg-gray-100 text-gray-700 text-sm">
