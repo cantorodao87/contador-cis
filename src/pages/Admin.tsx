@@ -51,7 +51,19 @@ const Admin: React.FC<Props> = ({
       </>
 
         ) : (
+
+      <>
+      
         <p className="text-green-700 font-semibold">✅ Acceso concedido como administrador.</p>
+        <div className="mt-4 text-left bg-gray-50 p-4 rounded border border-gray-300">
+          <h3 className="text-md font-semibold mb-2">🔎 Variables de entorno activas:</h3>
+          <p><strong>🔌 VITE_PROJECT_ID:</strong> {import.meta.env.VITE_PROJECT_ID}</p>
+          <p><strong>🗃️ VITE_DATABASE_URL:</strong> {import.meta.env.VITE_DATABASE_URL}</p>
+        </div>
+      
+      </>
+
+
       )}
 
       {error && <p className="text-red-500">{error}</p>}

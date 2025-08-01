@@ -1,19 +1,12 @@
 // src/firebase/config.js
-import { initializeApp } from "firebase/app";
-import { getDatabase, ref, get, set, push, update, remove, onValue } from "firebase/database";
+import { ref, get, set, push, update, remove, onValue } from "firebase/database";
 
-const firebaseConfig = {
-  apiKey: import.meta.env.VITE_API_KEY,
-  authDomain: "contadorcis.firebaseapp.com",
-  databaseURL: "https://contadorcis-default-rtdb.firebaseio.com",
-  projectId: "contadorcis",
-  storageBucket: "contadorcis.firebasestorage.app",
-  messagingSenderId: "1075325804169",
-  appId: "1:1075325804169:web:c888b4601c36a72b6e7058",
-  measurementId: "G-YL4TB0ECVJ"
-};
+import { dbLocal } from "./firebaseConfig.local";
+import { dbProd } from "./firebaseConfig.prod";
 
-const app = initializeApp(firebaseConfig);
-const db = getDatabase(app);
+const db =
+  import.meta.env.MODE === "development"
+    ? dbLocal
+    : dbProd;
 
 export { db, ref, get, set, push, update, remove, onValue };

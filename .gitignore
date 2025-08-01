@@ -27,3 +27,8 @@ doc/.~lock.Doc.odt#
 .env
 doc/.~lock.Doc_Copilot.odt#
 doc/.~lock.Doc_Version.odt#
+.firebase
+.env.production
+.env.local
+.firebase/**/*.cache
+.firebase/hosting.ZGlzdA.cache
