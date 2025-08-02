@@ -11,7 +11,7 @@ export default function Navegacion({ esAdmin, menuLateral }: Props) {
       <Link to="/" className="text-blue-600">Bolsa</Link>
       <Link to="/reservas" className="text-blue-600">Reservas</Link>
       <Link to="/resumen" className="text-blue-600">Resumen</Link>
-      {esAdmin && <Link to="/reset" className="text-blue-600">Reset</Link>}
+      {esAdmin && <Link to="/gestion" className="text-blue-600">Gestion</Link>}
       <Link to="/admin" className="text-blue-600">Admin</Link>
     </>
   );

@@ -5,7 +5,7 @@ import Bolsa from './pages/Bolsa';
 import Reservas from './pages/Reservas';
 import Resumen from './pages/Resumen';
 import Admin from './pages/Admin';
-import Reset from './pages/Reset';
+import Gestion from './pages/Gestion';
 import Navegacion from "./components/Navegacion";
 
 export default function App() {
@@ -40,7 +40,7 @@ export default function App() {
               />
             }
           />
-          <Route path="/reset" element={<Reset />} />
+          <Route path="/gestion" element={<Gestion esAdmin={esAdmin} />} />
         </Routes>
       </main>
     </div>
