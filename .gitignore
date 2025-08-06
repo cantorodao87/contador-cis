@@ -32,3 +32,4 @@ doc/.~lock.Doc_Version.odt#
 .env.local
 .firebase/**/*.cache
 .firebase/hosting.ZGlzdA.cache
+doc/contador-cis-dev-default-rtdb-export_v1.3.json

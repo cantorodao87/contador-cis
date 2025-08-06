@@ -17,24 +17,28 @@ const Reservas: React.FC = () => {
   const [reservaActiva, setReservaActiva] = useState<string | null>(null);
   const [fechaSeleccionada, setFechaSeleccionada] = useState("");
 
+  
+
   useEffect(() => {
     // Cargar trabajadores
     const trabajadoresRef = ref(db, "trabajadores");
     onValue(trabajadoresRef, (snapshot) => {
-      const data = snapshot.val() || [];
-      const lista = data
-        .map((t: any, index: number) => t ? { id: index.toString(), nombre: t.nombre } : null)
-        .filter(Boolean) as Trabajador[];
-      lista.sort((a, b) => a.nombre.localeCompare(b.nombre));
-      setTrabajadores(lista);
-    });
-
-    // Cargar reservas
-    const reservasRef = ref(db, "reservas");
-    onValue(reservasRef, (snapshot) => {
-      setReservas(snapshot.val() || {});
+      const data = snapshot.val() || {};
+      const lista = Object.entries(data)
+        .map(([id, t]: [string, any]) => ({ id, nombre: t.nombre }))
+        .sort((a, b) => a.nombre.localeCompare(b.nombre));
+        setTrabajadores(lista);
     });
   }, []);
+
+
+    useEffect(() => {
+      // Cargar reservas
+      const reservasRef = ref(db, "reservas");
+      onValue(reservasRef, (snapshot) => {
+        setReservas(snapshot.val() || {});
+      });
+    }, []);
 
   const crearReserva = (id: string) => {
     if (!fechaSeleccionada) return alert("Selecciona una fecha primero.");

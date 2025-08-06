@@ -1,19 +1,19 @@
 {
   "trabajadores": {
-    "1": { "nombre": "Burón" },
-    "2": { "nombre": "Quintana" },
-    "3": { "nombre": "Sergio" },
-    "4": { "nombre": "Noelia" },
-    "5": { "nombre": "Chamorro" },
-    "6": { "nombre": "Sonia" },
-    "7": { "nombre": "MarioB" },
-    "8": { "nombre": "MarioF" },
-    "9": { "nombre": "Darío" },
-    "10": { "nombre": "Dani" },
-    "11": { "nombre": "Minerva" },
-    "12": { "nombre": "Cayón" },
-    "13": { "nombre": "Seco" },
-    "14": { "nombre": "Alex" }
+    "trabajador_01": { "nombre": "Burón" },
+    "trabajador_02": { "nombre": "Quintana" },
+    "trabajador_03": { "nombre": "Sergio" },
+    "trabajador_04": { "nombre": "Noelia" },
+    "trabajador_05": { "nombre": "Chamorro" },
+    "trabajador_06": { "nombre": "Sonia" },
+    "trabajador_07": { "nombre": "Mario Blanco" },
+    "trabajador_08": { "nombre": "Mario Félix" },
+    "trabajador_09": { "nombre": "Darío" },
+    "trabajador_10": { "nombre": "Dani" },
+    "trabajador_11": { "nombre": "Minerva" },
+    "trabajador_12": { "nombre": "Cayón" },
+    "trabajador_13": { "nombre": "Seco" },
+    "trabajador_14": { "nombre": "Alex" }
   },
   "reservas": {},
   "peticiones": {}

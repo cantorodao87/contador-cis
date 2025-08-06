@@ -26,11 +26,10 @@ const Bolsa: React.FC = () => {
 
   useEffect(() => {
     onValue(ref(db, "trabajadores"), snap => {
-      const data = snap.val() || [];
-      const lista = data
-        .map((t: any, index: number) => t ? { id: index.toString(), nombre: t.nombre } : null)
-        .filter(Boolean) as Trabajador[];
-      lista.sort((a, b) => a.nombre.localeCompare(b.nombre));
+      const data = snap.val() || {};
+      const lista = Object.entries(data)
+        .map(([id, t]: [string, any]) => ({ id, nombre: t.nombre }))
+        .sort((a, b) => a.nombre.localeCompare(b.nombre));
       setTrabajadores(lista);
     });
 
@@ -121,6 +120,10 @@ const Bolsa: React.FC = () => {
     const fechaB = new Date(b[1].fecha).getTime();
     return fechaB - fechaA;
   });
+
+  /*if (trabajadores.length === 0 || Object.keys(peticiones).length === 0) {
+    return <p className="text-gray-500 text-center">🔄 Cargando datos…</p>;
+  }*/
 
   return (
   <div className="p-6 max-w-3xl mx-auto">
