@@ -1,4 +1,4 @@
-import { ref, push, update, remove, get } from "firebase/database";
+import { ref, update, remove, get } from "firebase/database";
 import React, { useState } from "react";
 import { db } from "../firebase/config";
 import type { Trabajador } from "../types/modelos";
