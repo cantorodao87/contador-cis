@@ -1,69 +1,117 @@
-# React + TypeScript + Vite
+# 🌐 ContadorCIS
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Bienvenido al repositorio de **ContadorCIS**, una aplicación web desarrollada con [Vite](https://vitejs.dev/) y desplegada en [Firebase Hosting](https://firebase.google.com/products/hosting). Este proyecto está preparado para integrarse fácilmente con GitHub Actions y desplegarse automáticamente en Firebase.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 ¿Cómo clonar y ejecutar el proyecto localmente?
 
-## Expanding the ESLint configuration
+1. **Clona el repositorio:**
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+   ```bash
+   git clone https://github.com/tu-usuario/contadorcis.git
+   cd contadorcis
+   ```
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+2. **Instala las dependencias:**
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+   ```bash
+   npm ci
+   ```
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+3. **Configura las variables de entorno:**
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+   Crea un archivo `.env` en la raíz del proyecto con tus claves de Firebase (si usas Vite):
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+   ```env
+   VITE_FIREBASE_API_KEY=tu_api_key
+   VITE_FIREBASE_AUTH_DOMAIN=tu_auth_domain
+   VITE_FIREBASE_PROJECT_ID=tu_project_id
+   VITE_FIREBASE_STORAGE_BUCKET=tu_storage_bucket
+   VITE_FIREBASE_MESSAGING_SENDER_ID=tu_sender_id
+   VITE_FIREBASE_APP_ID=tu_app_id
+   ```
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+4. **Ejecuta el servidor local:**
+
+   ```bash
+   npm run dev
+   ```
+
+---
+
+## 🔥 ¿Cómo desplegar en Firebase?
+
+### ✅ Requisitos previos
+
+- Tener una cuenta en [Firebase](https://firebase.google.com/)
+- Tener instalado [Firebase CLI](https://firebase.google.com/docs/cli)
+- Haber creado un proyecto en Firebase
+
+### 🧪 Despliegue manual
+
+1. **Autenticarse en Firebase:**
+
+   ```bash
+   firebase login
+   ```
+
+2. **Vincular el proyecto local con Firebase:**
+
+   ```bash
+   firebase use --add
+   ```
+
+3. **Construir el proyecto:**
+
+   ```bash
+   npm run build
+   ```
+
+4. **Desplegar:**
+
+   ```bash
+   firebase deploy
+   ```
+
+---
+
+## 🤖 Despliegue automático con GitHub Actions
+
+Este repositorio incluye dos workflows:
+
+- `firebase-hosting-pull-request.yml`: crea una vista previa cuando se abre un Pull Request.
+- `firebase-hosting-merge.yml`: despliega automáticamente a producción cuando se hace push a `main`.
+
+### 🧵 ¿Cómo activar el despliegue automático?
+
+1. Añade los siguientes secretos en la configuración del repositorio (`Settings > Secrets and variables > Actions`):
+
+   - `FIREBASE_SERVICE_ACCOUNT_CONTADORCIS`: tu clave de servicio de Firebase en formato JSON
+   - `GITHUB_TOKEN`: ya está disponible por defecto
+
+2. Asegúrate de que tus commits van a la rama `main` para activar el despliegue.
+
+3. También puedes ejecutar el workflow manualmente desde la pestaña **Actions** si has habilitado `workflow_dispatch`.
+
+---
+
+## 📦 Scripts disponibles
+
+| Comando            | Descripción                             |
+|--------------------|-----------------------------------------|
+| `npm run dev`      | Ejecuta el servidor local de desarrollo |
+| `npm run build`    | Compila la aplicación para producción    |
+| `npm run preview`  | Previsualiza la build localmente         |
+
+---
+
+## 📬 ¿Preguntas o sugerencias?
+
+Si tienes dudas, sugerencias o quieres contribuir, ¡no dudes en abrir un issue o un pull request!
+
+---
+
+## 📝 Licencia
+
+Este proyecto está bajo la licencia MIT.
